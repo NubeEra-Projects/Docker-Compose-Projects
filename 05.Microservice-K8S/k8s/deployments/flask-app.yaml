@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+  namespace: microservice-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+        - name: flask-app
+          image: ${IMAGE_NAME}:${IMAGE_TAG}  # To be replaced during deployment
+          ports:
+            - containerPort: 5000
+          env:
+            - name: FLASK_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: microservice-app-config
+                  key: FLASK_ENV
+            - name: FLASK_APP
+              valueFrom:
+                configMapKeyRef:
+                  name: microservice-app-config
+                  key: FLASK_APP
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: microservice-app-config
+                  key: PORT
+            - name: HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: microservice-app-config
+                  key: HOST
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: PGUSER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: PGPASSWORD
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: PGDATABASE
+            - name: PGHOST
+              value: "postgres"  # Points to PostgreSQL service name
+            - name: PGPORT
+              value: "5432"
+            - name: DATABASE_URL
+              value: "postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)"
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: SESSION_SECRET
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "300m"
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app
+  namespace: microservice-demo
+spec:
+  selector:
+    app: flask-app
+  ports:
+    - port: 80
+      targetPort: 5000
+  type: ClusterIP

@@ -1,0 +1,1410 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="api-title">Microservice Demonstration API</h1>
+        <p class="api-subtitle">A sample implementation of microservice architecture using Flask</p>
+        
+        <!-- Architecture Diagram -->
+        <div class="architecture-diagram">
+            <h2 class="diagram-title">Microservice Architecture</h2>
+            <div class="diagram-container" id="architecture-diagram">
+                <svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Client -->
+                    <g transform="translate(400, 50)">
+                        <rect x="-75" y="-25" width="150" height="50" rx="5" fill="#F8F9FA" stroke="#3B4151" stroke-width="2"/>
+                        <text x="0" y="5" font-size="16" text-anchor="middle" fill="#3B4151">Client Application</text>
+                    </g>
+                    
+                    <!-- API Gateway -->
+                    <g transform="translate(400, 150)">
+                        <rect x="-100" y="-30" width="200" height="60" rx="5" fill="#61AFFE" stroke="#3B4151" stroke-width="2"/>
+                        <text x="0" y="5" font-size="16" text-anchor="middle" fill="white">API Gateway</text>
+                    </g>
+                    
+                    <!-- User Service -->
+                    <g transform="translate(200, 250)">
+                        <rect x="-75" y="-25" width="150" height="50" rx="5" fill="#49CC90" stroke="#3B4151" stroke-width="2"/>
+                        <text x="0" y="5" font-size="16" text-anchor="middle" fill="white">User Service</text>
+                    </g>
+                    
+                    <!-- Product Service -->
+                    <g transform="translate(400, 250)">
+                        <rect x="-75" y="-25" width="150" height="50" rx="5" fill="#49CC90" stroke="#3B4151" stroke-width="2"/>
+                        <text x="0" y="5" font-size="16" text-anchor="middle" fill="white">Product Service</text>
+                    </g>
+                    
+                    <!-- Order Service -->
+                    <g transform="translate(600, 250)">
+                        <rect x="-75" y="-25" width="150" height="50" rx="5" fill="#49CC90" stroke="#3B4151" stroke-width="2"/>
+                        <text x="0" y="5" font-size="16" text-anchor="middle" fill="white">Order Service</text>
+                    </g>
+                    
+                    <!-- Database -->
+                    <g transform="translate(400, 350)">
+                        <path d="M-80,-15 L80,-15 C80,-15 100,0 80,15 L-80,15 C-100,0 -80,-15 -80,-15 Z" fill="#F8F9FA" stroke="#3B4151" stroke-width="2"/>
+                        <path d="M-80,-15 L80,-15 C80,-15 100,0 80,15 L-80,15 C-100,0 -80,-15 -80,-15 Z" fill="#F8F9FA" stroke="#3B4151" stroke-width="2" transform="translate(0, -10)"/>
+                        <text x="0" y="5" font-size="16" text-anchor="middle" fill="#3B4151">Database</text>
+                    </g>
+                    
+                    <!-- Connections -->
+                    <!-- Client to API Gateway -->
+                    <line x1="400" y1="75" x2="400" y2="120" stroke="#3B4151" stroke-width="2" stroke-dasharray="5,5"/>
+                    
+                    <!-- API Gateway to Services -->
+                    <line x1="400" y1="180" x2="200" y2="225" stroke="#3B4151" stroke-width="2" stroke-dasharray="5,5"/>
+                    <line x1="400" y1="180" x2="400" y2="225" stroke="#3B4151" stroke-width="2" stroke-dasharray="5,5"/>
+                    <line x1="400" y1="180" x2="600" y2="225" stroke="#3B4151" stroke-width="2" stroke-dasharray="5,5"/>
+                    
+                    <!-- Services to Database -->
+                    <line x1="200" y1="275" x2="400" y2="335" stroke="#3B4151" stroke-width="2" stroke-dasharray="5,5"/>
+                    <line x1="400" y1="275" x2="400" y2="335" stroke="#3B4151" stroke-width="2" stroke-dasharray="5,5"/>
+                    <line x1="600" y1="275" x2="400" y2="335" stroke="#3B4151" stroke-width="2" stroke-dasharray="5,5"/>
+                </svg>
+            </div>
+            <div class="mt-4">
+                <h5 class="text-center">Microservice Architecture Components</h5>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-user me-2" style="color: var(--secondary-color);"></i>User Service</h5>
+                                <p class="card-text">Manages user data and authentication. Responsible for user registration, profile management, and permissions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-box me-2" style="color: var(--secondary-color);"></i>Product Service</h5>
+                                <p class="card-text">Handles product inventory, catalog, and product information. Manages product availability and details.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-shopping-cart me-2" style="color: var(--secondary-color);"></i>Order Service</h5>
+                                <p class="card-text">Processes orders, handles checkout flow, and manages order status. Communicates with other services to fulfill orders.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Service Section -->
+        <section class="service-section" id="user-service">
+            <h2 class="service-title">User Service API</h2>
+            
+            <!-- Get All Users Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/api/users</span>
+                    <span class="endpoint-summary">Retrieve all users</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Returns a list of all users in the system.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "users": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "username": "john_doe",
+      "email": "john@example.com",
+      "created_at": "2023-01-15T12:30:45.123456"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "username": "jane_smith",
+      "email": "jane@example.com",
+      "created_at": "2023-01-16T14:20:30.123456"
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="GET" data-endpoint="/api/users">
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Get User by ID Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/api/users/{user_id}</span>
+                    <span class="endpoint-summary">Retrieve a user by ID</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Returns the details of a specific user by ID.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Path Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>user_id</td>
+                                    <td>string</td>
+                                    <td>Yes</td>
+                                    <td>The unique identifier of the user</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "username": "john_doe",
+    "email": "john@example.com",
+    "created_at": "2023-01-15T12:30:45.123456"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="GET" data-endpoint="/api/users/{user_id}">
+                                <div class="form-group">
+                                    <label class="form-label" for="user_id">user_id</label>
+                                    <input type="text" class="form-control" name="path_user_id" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Create User Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge post">POST</span>
+                    <span class="endpoint-path">/api/users</span>
+                    <span class="endpoint-summary">Create a new user</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Creates a new user in the system.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Request Body</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Request Body (application/json)</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "username": "new_user",
+  "email": "new.user@example.com"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "message": "User created successfully",
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "username": "new_user",
+    "email": "new.user@example.com",
+    "created_at": "2023-07-10T09:15:22.123456"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="POST" data-endpoint="/api/users">
+                                <div class="form-group">
+                                    <label class="form-label" for="requestBody">Request Body</label>
+                                    <textarea class="form-control" name="requestBody" required>{
+  "username": "new_user",
+  "email": "new.user@example.com"
+}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Update User Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge put">PUT</span>
+                    <span class="endpoint-path">/api/users/{user_id}</span>
+                    <span class="endpoint-summary">Update a user</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Updates an existing user's information.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Path Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>user_id</td>
+                                    <td>string</td>
+                                    <td>Yes</td>
+                                    <td>The unique identifier of the user</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Request Body</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Request Body (application/json)</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "username": "updated_username",
+  "email": "updated.email@example.com"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "message": "User updated successfully",
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "username": "updated_username",
+    "email": "updated.email@example.com",
+    "created_at": "2023-01-15T12:30:45.123456"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="PUT" data-endpoint="/api/users/{user_id}">
+                                <div class="form-group">
+                                    <label class="form-label" for="user_id">user_id</label>
+                                    <input type="text" class="form-control" name="path_user_id" required>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label class="form-label" for="requestBody">Request Body</label>
+                                    <textarea class="form-control" name="requestBody" required>{
+  "username": "updated_username",
+  "email": "updated.email@example.com"
+}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Delete User Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge delete">DELETE</span>
+                    <span class="endpoint-path">/api/users/{user_id}</span>
+                    <span class="endpoint-summary">Delete a user</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Deletes a user from the system.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Path Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>user_id</td>
+                                    <td>string</td>
+                                    <td>Yes</td>
+                                    <td>The unique identifier of the user</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "message": "User deleted successfully"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="DELETE" data-endpoint="/api/users/{user_id}">
+                                <div class="form-group">
+                                    <label class="form-label" for="user_id">user_id</label>
+                                    <input type="text" class="form-control" name="path_user_id" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Product Service Section -->
+        <section class="service-section" id="product-service">
+            <h2 class="service-title">Product Service API</h2>
+            
+            <!-- Get All Products Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/api/products</span>
+                    <span class="endpoint-summary">Retrieve all products</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Returns a list of all products in the system.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "products": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440003",
+      "name": "Smartphone",
+      "description": "Latest model with high-res camera",
+      "price": 799.99,
+      "stock": 50,
+      "created_at": "2023-01-15T12:30:45.123456"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440004",
+      "name": "Laptop",
+      "description": "Powerful laptop for developers",
+      "price": 1299.99,
+      "stock": 30,
+      "created_at": "2023-01-16T14:20:30.123456"
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="GET" data-endpoint="/api/products">
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Get Product by ID Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/api/products/{product_id}</span>
+                    <span class="endpoint-summary">Retrieve a product by ID</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Returns the details of a specific product by ID.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Path Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>product_id</td>
+                                    <td>string</td>
+                                    <td>Yes</td>
+                                    <td>The unique identifier of the product</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "product": {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "name": "Smartphone",
+    "description": "Latest model with high-res camera",
+    "price": 799.99,
+    "stock": 50,
+    "created_at": "2023-01-15T12:30:45.123456"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="GET" data-endpoint="/api/products/{product_id}">
+                                <div class="form-group">
+                                    <label class="form-label" for="product_id">product_id</label>
+                                    <input type="text" class="form-control" name="path_product_id" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Create Product Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge post">POST</span>
+                    <span class="endpoint-path">/api/products</span>
+                    <span class="endpoint-summary">Create a new product</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Creates a new product in the system.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Request Body</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Request Body (application/json)</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "name": "New Product",
+  "description": "Description of the new product",
+  "price": 199.99,
+  "stock": 100
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "message": "Product created successfully",
+  "product": {
+    "id": "550e8400-e29b-41d4-a716-446655440008",
+    "name": "New Product",
+    "description": "Description of the new product",
+    "price": 199.99,
+    "stock": 100,
+    "created_at": "2023-07-10T09:15:22.123456"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="POST" data-endpoint="/api/products">
+                                <div class="form-group">
+                                    <label class="form-label" for="requestBody">Request Body</label>
+                                    <textarea class="form-control" name="requestBody" required>{
+  "name": "New Product",
+  "description": "Description of the new product",
+  "price": 199.99,
+  "stock": 100
+}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Update Product Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge put">PUT</span>
+                    <span class="endpoint-path">/api/products/{product_id}</span>
+                    <span class="endpoint-summary">Update a product</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Updates an existing product's information.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Path Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>product_id</td>
+                                    <td>string</td>
+                                    <td>Yes</td>
+                                    <td>The unique identifier of the product</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Request Body</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Request Body (application/json)</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "name": "Updated Product Name",
+  "description": "Updated product description",
+  "price": 249.99,
+  "stock": 75
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "message": "Product updated successfully",
+  "product": {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "name": "Updated Product Name",
+    "description": "Updated product description",
+    "price": 249.99,
+    "stock": 75,
+    "created_at": "2023-01-15T12:30:45.123456"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="PUT" data-endpoint="/api/products/{product_id}">
+                                <div class="form-group">
+                                    <label class="form-label" for="product_id">product_id</label>
+                                    <input type="text" class="form-control" name="path_product_id" required>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label class="form-label" for="requestBody">Request Body</label>
+                                    <textarea class="form-control" name="requestBody" required>{
+  "name": "Updated Product Name",
+  "description": "Updated product description",
+  "price": 249.99,
+  "stock": 75
+}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Delete Product Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge delete">DELETE</span>
+                    <span class="endpoint-path">/api/products/{product_id}</span>
+                    <span class="endpoint-summary">Delete a product</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Deletes a product from the system.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Path Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>product_id</td>
+                                    <td>string</td>
+                                    <td>Yes</td>
+                                    <td>The unique identifier of the product</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "message": "Product deleted successfully"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="DELETE" data-endpoint="/api/products/{product_id}">
+                                <div class="form-group">
+                                    <label class="form-label" for="product_id">product_id</label>
+                                    <input type="text" class="form-control" name="path_product_id" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Order Service Section -->
+        <section class="service-section" id="order-service">
+            <h2 class="service-title">Order Service API</h2>
+            
+            <!-- Get All Orders Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/api/orders</span>
+                    <span class="endpoint-summary">Retrieve all orders</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Returns a list of all orders in the system. Can be filtered by user_id.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Query Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>user_id</td>
+                                    <td>string</td>
+                                    <td>No</td>
+                                    <td>Filter orders by user ID</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "orders": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440008",
+      "user_id": "550e8400-e29b-41d4-a716-446655440000",
+      "status": "delivered",
+      "items": [
+        {
+          "product_id": "550e8400-e29b-41d4-a716-446655440003",
+          "quantity": 1,
+          "unit_price": 799.99
+        },
+        {
+          "product_id": "550e8400-e29b-41d4-a716-446655440005",
+          "quantity": 1,
+          "unit_price": 199.99
+        }
+      ],
+      "created_at": "2023-01-15T12:30:45.123456",
+      "total": 999.98
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440009",
+      "user_id": "550e8400-e29b-41d4-a716-446655440001",
+      "status": "shipped",
+      "items": [
+        {
+          "product_id": "550e8400-e29b-41d4-a716-446655440004",
+          "quantity": 1,
+          "unit_price": 1299.99
+        }
+      ],
+      "created_at": "2023-01-16T14:20:30.123456",
+      "total": 1299.99
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="GET" data-endpoint="/api/orders">
+                                <div class="form-group">
+                                    <label class="form-label" for="user_id">user_id (optional)</label>
+                                    <input type="text" class="form-control" name="query_user_id">
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Get Order by ID Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-path">/api/orders/{order_id}</span>
+                    <span class="endpoint-summary">Retrieve an order by ID</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Returns the details of a specific order by ID.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Path Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>order_id</td>
+                                    <td>string</td>
+                                    <td>Yes</td>
+                                    <td>The unique identifier of the order</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "order": {
+    "id": "550e8400-e29b-41d4-a716-446655440008",
+    "user_id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "delivered",
+    "items": [
+      {
+        "product_id": "550e8400-e29b-41d4-a716-446655440003",
+        "quantity": 1,
+        "unit_price": 799.99
+      },
+      {
+        "product_id": "550e8400-e29b-41d4-a716-446655440005",
+        "quantity": 1,
+        "unit_price": 199.99
+      }
+    ],
+    "created_at": "2023-01-15T12:30:45.123456",
+    "total": 999.98
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="GET" data-endpoint="/api/orders/{order_id}">
+                                <div class="form-group">
+                                    <label class="form-label" for="order_id">order_id</label>
+                                    <input type="text" class="form-control" name="path_order_id" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Create Order Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge post">POST</span>
+                    <span class="endpoint-path">/api/orders</span>
+                    <span class="endpoint-summary">Create a new order</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Creates a new order in the system.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Request Body</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Request Body (application/json)</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "user_id": "550e8400-e29b-41d4-a716-446655440000",
+  "items": [
+    {
+      "product_id": "550e8400-e29b-41d4-a716-446655440003",
+      "quantity": 1
+    },
+    {
+      "product_id": "550e8400-e29b-41d4-a716-446655440007",
+      "quantity": 2
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "message": "Order created successfully",
+  "order": {
+    "id": "550e8400-e29b-41d4-a716-446655440012",
+    "user_id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "pending",
+    "items": [
+      {
+        "product_id": "550e8400-e29b-41d4-a716-446655440003",
+        "quantity": 1,
+        "unit_price": 799.99
+      },
+      {
+        "product_id": "550e8400-e29b-41d4-a716-446655440007",
+        "quantity": 2,
+        "unit_price": 499.99
+      }
+    ],
+    "created_at": "2023-07-10T09:15:22.123456",
+    "total": 1799.97
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="POST" data-endpoint="/api/orders">
+                                <div class="form-group">
+                                    <label class="form-label" for="requestBody">Request Body</label>
+                                    <textarea class="form-control" name="requestBody" required>{
+  "user_id": "550e8400-e29b-41d4-a716-446655440000",
+  "items": [
+    {
+      "product_id": "550e8400-e29b-41d4-a716-446655440003",
+      "quantity": 1
+    },
+    {
+      "product_id": "550e8400-e29b-41d4-a716-446655440007",
+      "quantity": 2
+    }
+  ]
+}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Update Order Status Endpoint -->
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method-badge put">PUT</span>
+                    <span class="endpoint-path">/api/orders/{order_id}/status</span>
+                    <span class="endpoint-summary">Update order status</span>
+                </div>
+                <div class="endpoint-content">
+                    <div class="endpoint-description">
+                        <p>Updates the status of an existing order.</p>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Path Parameters</div>
+                        <table class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>order_id</td>
+                                    <td>string</td>
+                                    <td>Yes</td>
+                                    <td>The unique identifier of the order</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Request Body</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Request Body (application/json)</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "status": "shipped"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-section">
+                        <div class="endpoint-section-title">Response</div>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Response Body</span>
+                            </div>
+                            <div class="code-content">
+                                <pre><code class="language-json">{
+  "success": true,
+  "message": "Order status updated successfully",
+  "order": {
+    "id": "550e8400-e29b-41d4-a716-446655440008",
+    "user_id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "shipped",
+    "items": [
+      {
+        "product_id": "550e8400-e29b-41d4-a716-446655440003",
+        "quantity": 1,
+        "unit_price": 799.99
+      },
+      {
+        "product_id": "550e8400-e29b-41d4-a716-446655440005",
+        "quantity": 1,
+        "unit_price": 199.99
+      }
+    ],
+    "created_at": "2023-01-15T12:30:45.123456",
+    "total": 999.98
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="try-it-out">
+                        <button class="try-it-btn">Try it out</button>
+                        <div class="try-it-form" style="display: none;">
+                            <form class="api-form" data-method="PUT" data-endpoint="/api/orders/{order_id}/status">
+                                <div class="form-group">
+                                    <label class="form-label" for="order_id">order_id</label>
+                                    <input type="text" class="form-control" name="path_order_id" required>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label class="form-label" for="requestBody">Request Body</label>
+                                    <textarea class="form-control" name="requestBody" required>{
+  "status": "shipped"
+}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Execute Request</button>
+                            </form>
+                            <div class="response-section" style="display: none;">
+                                <h5 class="mt-3">Response</h5>
+                                <p class="response-status"></p>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Response Body</span>
+                                    </div>
+                                    <pre><code class="language-json response-body"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Microservice Concepts Section -->
+        <section class="service-section" id="concepts">
+            <h2 class="service-title">Microservice Concepts</h2>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-puzzle-piece me-2" style="color: var(--primary-color);"></i>Service Decomposition</h4>
+                            <p class="card-text">
+                                Microservices are designed around business capabilities, with each service focused on a single function. 
+                                In this demo, we've decomposed our application into three core services:
+                            </p>
+                            <ul>
+                                <li><strong>User Service:</strong> Manages user accounts and authentication</li>
+                                <li><strong>Product Service:</strong> Handles product catalog and inventory</li>
+                                <li><strong>Order Service:</strong> Processes orders and handles checkout</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-database me-2" style="color: var(--primary-color);"></i>Database Independence</h4>
+                            <p class="card-text">
+                                Each microservice should own its data model. In a production environment, services 
+                                could use different databases or schemas optimized for their specific needs. For example:
+                            </p>
+                            <ul>
+                                <li><strong>User Service:</strong> Relational database (PostgreSQL)</li>
+                                <li><strong>Product Service:</strong> Relational database with search capabilities</li>
+                                <li><strong>Order Service:</strong> Document store (MongoDB) for flexible order data</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-exchange-alt me-2" style="color: var(--primary-color);"></i>Inter-Service Communication</h4>
+                            <p class="card-text">
+                                Microservices communicate with each other through well-defined APIs. Common communication patterns include:
+                            </p>
+                            <ul>
+                                <li><strong>Synchronous REST:</strong> Direct service-to-service API calls</li>
+                                <li><strong>Asynchronous Messaging:</strong> Using message queues or event buses</li>
+                                <li><strong>Event Sourcing:</strong> Services publish and subscribe to events</li>
+                            </ul>
+                            <p>This demo currently uses RESTful HTTP for simplicity, but production systems often combine multiple patterns.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-shield-alt me-2" style="color: var(--primary-color);"></i>Resilience & Fault Tolerance</h4>
+                            <p class="card-text">
+                                Microservice architectures must be designed for resilience. Key strategies include:
+                            </p>
+                            <ul>
+                                <li><strong>Circuit Breakers:</strong> Prevent cascading failures across services</li>
+                                <li><strong>Bulkheads:</strong> Isolate failures to protect the overall system</li>
+                                <li><strong>Retries & Timeouts:</strong> Handle transient failures gracefully</li>
+                                <li><strong>Fallbacks:</strong> Provide degraded but functional service when dependencies fail</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

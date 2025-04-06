@@ -1,0 +1,313 @@
+/* Main Styles for Microservice Demo Application */
+
+:root {
+  /* Color variables from the style guide */
+  --primary-color: #61AFFE;
+  --secondary-color: #49CC90;
+  --error-color: #F93E3E;
+  --background-color: #F8F9FA;
+  --text-color: #3B4151;
+  --border-color: #E1E1E1;
+  --method-get: #61AFFE;
+  --method-post: #49CC90;
+  --method-put: #FCA130;
+  --method-delete: #F93E3E;
+  --code-background: #263238;
+}
+
+body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+header {
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.main-content {
+  padding: 2rem 0;
+}
+
+/* API Documentation Styles */
+.api-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.api-subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.service-section {
+  margin-bottom: 3rem;
+}
+
+.service-title {
+  font-size: 1.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.endpoint-card {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.endpoint-header {
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.endpoint-header:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.method-badge {
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  margin-right: 1rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+.method-badge.get {
+  background-color: var(--method-get);
+}
+
+.method-badge.post {
+  background-color: var(--method-post);
+}
+
+.method-badge.put {
+  background-color: var(--method-put);
+}
+
+.method-badge.delete {
+  background-color: var(--method-delete);
+}
+
+.endpoint-path {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.endpoint-summary {
+  flex-grow: 1;
+  margin-left: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.endpoint-content {
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+  display: none;
+}
+
+.endpoint-description {
+  margin-bottom: 1rem;
+}
+
+.endpoint-section {
+  margin-bottom: 1.5rem;
+}
+
+.endpoint-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.params-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.params-table th, .params-table td {
+  padding: 0.6rem 1rem;
+  text-align: left;
+  border: 1px solid var(--border-color);
+}
+
+.params-table th {
+  background-color: rgba(0, 0, 0, 0.02);
+  font-weight: 600;
+}
+
+.code-block {
+  background-color: var(--code-background);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: 0.9rem;
+}
+
+.code-content {
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.9rem;
+}
+
+pre {
+  margin: 0;
+}
+
+/* Try it out section */
+.try-it-out {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f0f4f8;
+  border-radius: 4px;
+}
+
+.try-it-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.try-it-btn:hover {
+  background-color: #4a94d6;
+}
+
+.try-it-form {
+  margin-top: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: 'Source Code Pro', monospace;
+}
+
+textarea.form-control {
+  min-height: 120px;
+}
+
+.response-section {
+  margin-top: 1.5rem;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Utilities */
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
+.text-success {
+  color: var(--secondary-color);
+}
+
+.text-error {
+  color: var(--error-color);
+}
+
+/* Microservice Architecture Diagram */
+.architecture-diagram {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.diagram-title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.diagram-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .api-title {
+    font-size: 2rem;
+  }
+  
+  .endpoint-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .endpoint-summary {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+  
+  .method-badge {
+    margin-bottom: 0.5rem;
+  }
+}
